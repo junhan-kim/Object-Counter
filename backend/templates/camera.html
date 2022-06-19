@@ -1,19 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Video & Audio Recorder</title>
+    <title>Video Data Uploader</title>
     <style>
       body {
         text-align: center;
         color: green;
         font-size: 1.2em;
-      }
-
-      .display-none {
-        display: none;
       }
 
       .recording {
@@ -32,11 +28,6 @@
         height: 240px;
       }
 
-      audio {
-        display: block;
-        margin: 6px auto;
-      }
-
       a {
         color: green;
       }
@@ -44,16 +35,9 @@
   </head>
 
   <body>
-    <h1>Video & Audio Recorder</h1>
-    <label for="media"> Select what you want to record: </label>
+    <h1>Video Data Uploader</h1>
 
-    <select id="media">
-      <option value="choose-an-option">Choose an option</option>
-      <option value="vid">Video</option>
-      <option value="aud">Audio</option>
-    </select>
-
-    <div class="display-none" id="vid-recorder">
+    <div id="vid-recorder">
       <h3>Record Video</h3>
       <video autoplay id="web-cam-container" style="background-color: black">Your browser doesn't support the video tag</video>
 
@@ -91,73 +75,17 @@
       <!-- <a href="" > Download it! </a> -->
     </div>
 
-    <div class="display-none" id="aud-recorder">
-      <h3>Record Audio</h3>
-
-      <div class="recording" id="aud-record-status">Click the "Start Recording" button to start recording</div>
-
-      <button
-        type="button"
-        id="start-aud-recording"
-        onclick="startRecording(this, 
-            document.getElementById('stop-aud-recording'))"
-      >
-        Start recording
-      </button>
-
-      <button
-        type="button"
-        id="stop-aud-recording"
-        disabled
-        onclick="stopRecording(this, 
-            document.getElementById('start-aud-recording'))"
-      >
-        Stop recording
-      </button>
-
-      <!-- The audio element will contain the 
-            recorded audio and will be created 
-            using Javascript -->
-      <!-- <audio id="recorded-audio" 
-            controls></audio> -->
-
-      <!-- The below link will let the users 
-             download the recorded audio -->
-      <!-- <a href="" > Download it! </a> -->
-    </div>
-
     <script>
       const mediaSelector = document.getElementById("media");
 
       const webCamContainer = document.getElementById("web-cam-container");
-
-      let selectedMedia = null;
 
       // This array stores the recorded media data
       let chunks = [];
 
       // Handler function to handle the "change" event
       // when the user selects some option
-      mediaSelector.addEventListener("change", (e) => {
-        // Takes the current value of the mediaSeletor
-        selectedMedia = e.target.value;
-
-        document.getElementById(`${selectedMedia}-recorder`).style.display = "block";
-
-        document.getElementById(`${otherRecorderContainer(selectedMedia)}-recorder`).style.display = "none";
-      });
-
-      function otherRecorderContainer(selectedMedia) {
-        return selectedMedia === "vid" ? "aud" : "vid";
-      }
-
-      // This constraints object tells
-      // the browser to include only
-      // the audio Media Track
-      const audioMediaConstraints = {
-        audio: true,
-        video: false,
-      };
+      document.getElementById(`vid-recorder`).style.display = "block";
 
       // This constraints object tells
       // the browser to include
@@ -180,7 +108,7 @@
       // gets invoked
       function startRecording(thisButton, otherButton) {
         // Access the camera and microphone
-        navigator.mediaDevices.getUserMedia(selectedMedia === "vid" ? videoMediaConstraints : audioMediaConstraints).then((mediaStream) => {
+        navigator.mediaDevices.getUserMedia(videoMediaConstraints).then((mediaStream) => {
           // Create a new MediaRecorder instance
           const mediaRecorder = new MediaRecorder(mediaStream);
 
@@ -206,23 +134,23 @@
           // event
           mediaRecorder.onstop = () => {
             /* A Blob is a File like object.
-                  In fact, the File interface is
-                  based on Blob. File inherits the
-                  Blob interface and expands it to
-                  support the files on the user's
-                  systemThe Blob constructor takes
-                  the chunk of media data as the
-                  first parameter and constructs
-                  a Blob of the type given as the
-                  second parameter*/
+                        In fact, the File interface is
+                        based on Blob. File inherits the
+                        Blob interface and expands it to
+                        support the files on the user's
+                        systemThe Blob constructor takes
+                        the chunk of media data as the
+                        first parameter and constructs
+                        a Blob of the type given as the
+                        second parameter*/
             const blob = new Blob(chunks, {
-              type: selectedMedia === "vid" ? "video/mp4" : "audio/mpeg",
+              type: "video/mp4",
             });
             chunks = [];
 
             // Create a video or audio element
             // that stores the recorded media
-            const recordedMedia = document.createElement(selectedMedia === "vid" ? "video" : "audio");
+            const recordedMedia = document.createElement("video");
             recordedMedia.controls = true;
 
             // You can not directly set the blob as
@@ -249,26 +177,24 @@
 
             downloadButton.onclick = () => {
               /* After download revoke the created URL
-                      using URL.revokeObjectURL() method to
-                      avoid possible memory leak. Though,
-                      the browser automatically revokes the
-                      created URL when the document is unloaded,
-                      but still it is good to revoke the created
-                      URLs */
+                            using URL.revokeObjectURL() method to
+                            avoid possible memory leak. Though,
+                            the browser automatically revokes the
+                            created URL when the document is unloaded,
+                            but still it is good to revoke the created
+                            URLs */
               URL.revokeObjectURL(recordedMedia);
             };
 
-            document.getElementById(`${selectedMedia}-recorder`).append(recordedMedia, downloadButton);
+            document.getElementById(`vid-recorder`).append(recordedMedia, downloadButton);
           };
 
-          if (selectedMedia === "vid") {
-            // Remember to use the srcObject
-            // attribute since the src attribute
-            // doesn't support media stream as a value
-            webCamContainer.srcObject = mediaStream;
-          }
+          // Remember to use the srcObject
+          // attribute since the src attribute
+          // doesn't support media stream as a value
+          webCamContainer.srcObject = mediaStream;
 
-          document.getElementById(`${selectedMedia}-record-status`).innerText = "Recording";
+          document.getElementById(`vid-record-status`).innerText = "Recording";
 
           thisButton.disabled = true;
           otherButton.disabled = false;
@@ -285,7 +211,7 @@
           track.stop();
         });
 
-        document.getElementById(`${selectedMedia}-record-status`).innerText = "Recording done!";
+        document.getElementById(`vid-record-status`).innerText = "Recording done!";
         thisButton.disabled = true;
         otherButton.disabled = false;
       }
