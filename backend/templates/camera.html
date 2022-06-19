@@ -38,13 +38,6 @@
         object-fit: cover;
       }
 
-      #camera--view,
-      #camera--sensor,
-      #camera--output {
-        transform: scaleX(-1);
-        filter: FlipH;
-      }
-
       #camera--trigger {
         width: 180px;
         color: white;
@@ -92,11 +85,12 @@
         },
         audio: false,
       };
-      
+
       const cameraView = document.querySelector("#camera--view");
       const cameraOutput = document.querySelector("#camera--output");
       const cameraSensor = document.querySelector("#camera--sensor");
       const cameraTrigger = document.querySelector("#camera--trigger");
+      const context = cameraSensor.getContext("2d");
 
       function cameraStart() {
         navigator.mediaDevices
@@ -110,11 +104,10 @@
           });
       }
 
-      //촬영 버튼 클릭 리스너
       cameraTrigger.addEventListener("click", function () {
-        cameraSensor.width = cameraView.videoWidth; //640으로 정해져서 나오네?
+        cameraSensor.width = cameraView.videoWidth;
         cameraSensor.height = cameraView.videoHeight;
-        cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
+        context.drawImage(cameraView, 0, 0);
         cameraOutput.src = cameraSensor.toDataURL("image/webp");
         cameraOutput.classList.add("taken");
         console.log(cameraSensor.height);
