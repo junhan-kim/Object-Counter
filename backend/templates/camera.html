@@ -66,6 +66,9 @@
         녹화 중지
       </button>
 
+      <h3>녹화 결과</h3>
+      <div id="vid-result"></div>
+
       <!-- The below link will let the
              users download the recorded video -->
       <!-- <a href="" > Download it! </a> -->
@@ -118,7 +121,9 @@
               URL.revokeObjectURL(recordedMedia); // 메모리 누수 방지
             };
 
-            document.getElementById("vid-recorder").append(recordedMedia, downloadButton);
+            const vidResult = document.getElementById("vid-result");
+            vidResult.replaceChildren();
+            vidResult.append(recordedMedia, downloadButton);
           };
 
           webCamContainer.srcObject = mediaStream;
