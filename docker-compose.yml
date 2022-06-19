@@ -3,12 +3,12 @@ networks:
   proxynet:
     driver: bridge
 
-backend:
-  container_name: backend
-  build: ./backend
-  restart: always
-  networks:
-      - proxynet
-  ports:
-    - "5000:5000"
-  command: gunicorn -w 2 -b :5000 wsgi:server
+services:
+  backend:
+    container_name: backend
+    build: ./backend
+    restart: always
+    networks:
+        - proxynet
+    ports:
+      - "5000:5000"

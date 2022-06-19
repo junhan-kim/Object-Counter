@@ -3,6 +3,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def camera():
     return render_template('./extractor/camera.html')
