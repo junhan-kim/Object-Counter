@@ -42,10 +42,10 @@
     <h1>Video Data Uploader</h1>
 
     <div id="vid-recorder">
-      <h3>Record Video</h3>
-      <video autoplay id="web-cam-container" style="background-color: black">Your browser doesn't support the video tag</video>
+      <h3>비디오 녹화</h3>
+      <video autoplay id="web-cam-container" style="background-color: black">브라우저가 video 태그를 지원하지 않음.</video>
 
-      <div class="recording" id="vid-record-status">Click the "Start video Recording" button to start recording</div>
+      <div class="recording" id="vid-record-status">녹화를 시작하려면 "녹화 시작" 버튼을 눌러주세요.</div>
 
       <button
         type="button"
@@ -53,7 +53,7 @@
         onclick="startRecording(this, 
             document.getElementById('stop-vid-recording'))"
       >
-        Start video recording
+        녹화 시작
       </button>
 
       <button
@@ -63,7 +63,7 @@
         onclick="stopRecording(this, 
             document.getElementById('start-vid-recording'))"
       >
-        Stop video recording
+        녹화 중지
       </button>
 
       <!-- The below link will let the
